@@ -1,0 +1,152 @@
+#ifndef __MY_HEADER__
+#define __MY_HEADER__
+
+#include "ftt.h"
+#include "fluid.h"
+#include "variable.h"
+#include <CL/cl.h>
+
+#define _GNU_SOURCE 
+
+#include <sys/time.h>
+#include <time.h>
+#include <sched.h>
+#include "rdtsc.h"
+#include "/srv/homes/zovasili/Gerris/gts-snapshot-120706/src/myGtsHeader.h"
+
+
+
+ //#define WAY3
+ #define WAY1
+ #define CONTIGUOUS_ALLOCATION
+ #define DEBUG_MODE  
+ #define BILLION  1E9
+ 
+ struct Data_Of_Cell {
+   GfsStateVector a;
+   double numbers[20];
+  };
+  
+  extern unsigned long long gfs_centered_velocity_advection_diffusion_rdtsc;
+  extern unsigned long long variable_sources_rdtsc;
+  extern unsigned long long variable_sources_else_rdtsc;
+  extern unsigned long long gfs_domain_bc_rdtsc;
+  extern unsigned long long gfs_domain_traverse_leaves_rdtsc;
+  extern unsigned long long gfs_domain_foreach_gpu_rdtsc;
+  extern unsigned long long gfs_poisson_cycle_rdtsc;
+  extern unsigned long long gfs_advance_tracers_rdtsc;
+  extern unsigned long long get_from_above_rdtsc;
+  extern unsigned long long relax_loop_rdtsc;
+  extern unsigned long long gfs_traverse_and_homogeneous_bc_rdtsc;
+  
+  //simulation run
+  extern double gfs_centered_velocity_adv_diff_clk;
+  extern double gfs_domain_face_traverse1_clk;
+  extern double gfs_domain_face_traverse2_clk;
+  extern double gfs_predicted_face_velocities_clk;
+  extern double gfs_mac_projection_clk;
+  extern double gfs_approximate_projection_clk;
+  extern double gfs_source_coriolis_implicit_clk;
+  extern double gfs_correct_centered_velocities_clk;
+  extern double gfs_domain_cell_traverse_sim_run_clk;
+  extern double gfs_advance_tracers_clk;
+  extern double gfs_update_gradients_clk; 
+  extern double gfs_event_do_clk;
+  extern double gfs_simulation_adapt_clk;
+  extern double gfs_event_half_do_clk;
+  extern double gts_range_add_value_clk;
+  extern double gfs_variables_swap_clk;
+  extern double gfs_simulation_run_start_clk;
+  extern double gfs_simulation_run_clk;
+  //gfs centered velocity advecion diffussion
+  extern double gfs_domain_traverse_leaves_clk;
+  extern double variable_sources_clk;
+  extern double gfs_domain_variable_centered_sources_clk;
+  extern double gfs_domain_cell_traverse_var_src_clk;
+  extern double gfs_velocity_face_sources_clk;
+  //mac projection
+  extern double  gfs_poisson_coefficients_mac_clk ;
+  extern double  poisson_solve_mac_clk;
+  //approx proj
+  extern double gfs_domain_face_traverse_approx1_clk;
+  extern double gfs_domain_face_traverse_approx2_clk;
+  //gfs_advance_tracers
+  extern double gfs_domain_variable_centered_sources_adv_trc_clk;
+  extern double gfs_domain_cell_traverse_adv_trc_clk;
+  extern double gfs_tracer_advection_diffusion_adv_trc_clk;
+  //domain_foreach
+  extern double domain_foreach_clk;
+  extern double domain_foreach_gpu_clk;
+  //poisson_cycle
+  extern double get_from_above_clk;
+  extern double relax_loop_clk;
+  extern double gfs_traverse_and_homogeneous_bc_clk;
+  extern double gfs_domain_cell_traverse_homogeneous_bc_clk;
+  extern double gfs_homogeneous_bc_clk;
+  extern double gfs_poisson_cycle_clk;
+ 
+
+  extern int numberOcts;
+
+ #ifdef CONTIGUOUS_ALLOCATION
+  extern gpointer my_malloc_roots(unsigned long size);
+  extern gpointer my_malloc_tree(unsigned long size);
+  extern gpointer my_malloc_boundaries(unsigned long size);
+  extern gpointer treeEnd, tree;
+  extern gpointer RootEnd, Root; 
+  extern gpointer BoundaryEnd, Boundary;
+  extern gpointer cellData;
+
+  extern unsigned long quadTreeNumberOfNodes(int MaxLevel);
+  extern int MaxLevelRefinement;//from gfs file:GfsRefine MaxLevelRefinement
+  extern unsigned long numberOfCells;//total number of Cells
+  extern char refine_calling;//flag to check if function_read is called from gfs_refine_read
+
+  extern void ReleaseResources();
+
+  extern int runCLinit(char * filename);//Initialize the enviroment for Ohttp://www.youtube.com/watch?v=L8Yf06sU-HspenCL
+  extern int runCLConvertAddressesToGPU();//Convert CPU Addresses to GPU Addresses
+  extern int runCLTraverseTreePerLevel(unsigned int max_depth, GfsVariable * v, unsigned int i);//calling  cell_traverse_level_non_leafs_kernel
+  extern void checkErr(cl_int err, const char * name);//Checking OpenCL Errors
+  extern void ReleaseOpenCLResources();
+
+  //Functions for setting the openCL env
+  extern cl_context createContext();
+  extern cl_command_queue createCommandQueue(cl_context context, cl_device_id *device);
+  extern cl_program createProgram(cl_context context, cl_device_id device, const char * name);
+  
+  //OpenCL Resources
+  extern cl_context context;
+  extern cl_command_queue commands;
+  extern cl_program program; 
+  extern cl_kernel convert_tree_address_kernel;
+  extern cl_kernel cell_traverse_level_non_leafs_kernel;
+ 
+  //memory objects for the device
+  extern cl_mem root_d; 
+  extern cl_mem boundary_d;
+  extern cl_mem tree_d;  
+  extern cl_mem cellData_d;
+  extern cl_mem solid_data_d;
+  extern cl_mem ftt_opposite_direction_d;
+  extern cl_mem coords_d;
+  extern cl_mem index_d;
+  extern cl_mem size_d;
+
+  extern unsigned long sizes[15];
+ 
+  extern char from_top_to_bottom_traverse;//flag when poisson cycle, used in function domain_foreach
+
+  //For data allocation
+  #ifdef WAY1
+  extern gpointer  my_malloc_cell_data(unsigned long size);
+  extern gpointer cellData;
+  #elif defined(WAY3)
+  extern struct Data_Of_Cell * cell_data;
+  extern GfsSolidVector * solid_data;
+  extern int nxtIndxData;
+  extern int nxtIndxSolidData;
+  #endif
+ #endif
+
+#endif
