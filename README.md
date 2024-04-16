@@ -1,4 +1,5 @@
 # The Gerris flow solver is ported in GPU
+This project serves as the culmination of my undergraduate studies: https://www.e-ce.uth.gr/wp-content/uploads/formidable/Vasiliou_zoi.pdf 
 
 Download Gerris flow solver
 from http://gerris.dalembert.upmc.fr/ 
