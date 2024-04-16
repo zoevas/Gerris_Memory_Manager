@@ -3,6 +3,9 @@
 Download Gerris flow solver
 from http://gerris.dalembert.upmc.fr/ 
 
+Since Gerris is a simulation software, it is slow, so we ported it to the GPU for harvesting its multiple cores.
+We used the OpenCL framework for porting it to the GPU.
+
 Linked data structures require many transfers between components
 of the system. Since transfers cost due to latency, we have developed
 a method minimizing the transfers among the components of the
@@ -31,6 +34,8 @@ CPPFLAGS="-I <your path>/NVIDIA_GPU_Computing_SDK/OpenCL/common/inc" LDFLAGS="-l
 ```
 
 
+
+
 ## Technical details
  
 
@@ -42,6 +47,8 @@ CPPFLAGS="-I <your path>/NVIDIA_GPU_Computing_SDK/OpenCL/common/inc" LDFLAGS="-l
 
 ![diplwmatikh_parousiash](https://github.com/zoevas/Gerris_Memory_Manager/assets/85183528/3e4bc30b-a3e3-48ed-9fa9-2020b5e35be6)
 ![diplwmatikh_parousiash2](https://github.com/zoevas/Gerris_Memory_Manager/assets/85183528/0c7df5db-5756-438a-8c4f-b4c757be6c8e)
+
+The kernels running on GPU are contained in _kernel.cl_ file.
 
 ## References
 [1] Gerris page: http://gfs.sourceforge.net/wiki/index.php/Main_Page
