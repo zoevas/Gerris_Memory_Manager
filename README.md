@@ -39,12 +39,13 @@ CPPFLAGS="-I <your path>/NVIDIA_GPU_Computing_SDK/OpenCL/common/inc" LDFLAGS="-l
 
 ## Technical details
  
-
+_myHeader.h_ contains the declarations for the memory manager that will be used in the gerris .c files where the trees will be allocated.
  _ftt.c_ contains the memory manager that converts the quad tree in a consecutive memory, namely an array.
  The memory manager is the function 'gpointer my_malloc_tree(unsigned long size)'.
 
  Each time my_malloc is called, it returns an address of the contiguous memory region allocated at the beginning.
- 
+ _solid.c_  is calling _my_malloc_cell_data_
+ _boundary.c_ is calling many _my_malloc_ functions
 
 ![diplwmatikh_parousiash](https://github.com/zoevas/Gerris_Memory_Manager/assets/85183528/3e4bc30b-a3e3-48ed-9fa9-2020b5e35be6)
 ![diplwmatikh_parousiash2](https://github.com/zoevas/Gerris_Memory_Manager/assets/85183528/0c7df5db-5756-438a-8c4f-b4c757be6c8e)
