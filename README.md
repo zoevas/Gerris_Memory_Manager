@@ -44,7 +44,9 @@ _myHeader.h_ contains the declarations for the memory manager that will be used 
  The memory manager is the function 'gpointer my_malloc_tree(unsigned long size)'.
 
  Each time my_malloc is called, it returns an address of the contiguous memory region allocated at the beginning.
+ 
  _solid.c_  is calling _my_malloc_cell_data_
+ 
  _boundary.c_ is calling many _my_malloc_ functions
 
 ![diplwmatikh_parousiash](https://github.com/zoevas/Gerris_Memory_Manager/assets/85183528/3e4bc30b-a3e3-48ed-9fa9-2020b5e35be6)
